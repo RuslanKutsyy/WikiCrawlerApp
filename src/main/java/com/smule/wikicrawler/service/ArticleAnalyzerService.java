@@ -1,12 +1,16 @@
-package com.smule.wikicrawler.wiki;
+package com.smule.wikicrawler.service;
 
-import com.smule.wikicrawler.dao.WikiArticleResultService;
-import com.smule.wikicrawler.dao.WikiRequestService;
-import com.smule.wikicrawler.http.WikiWebService;
+import com.smule.wikicrawler.dao.ResultService;
+import com.smule.wikicrawler.dao.RequestService;
+import com.smule.wikicrawler.dto.WikipediaArticle;
+import com.smule.wikicrawler.model.Request;
+import com.smule.wikicrawler.model.Result;
+import com.smule.wikicrawler.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -15,52 +19,60 @@ public class ArticleAnalyzerService {
     @Qualifier("getThreadPool")
     @Autowired
     private Executor threadPool;
-    @Autowired
-    private WikiRequestService wikiRequestService;
-    @Autowired
-    private WikiArticleResultService wikiArticleResultService;
-    @Autowired
-    WikiWebService webService;
+    private RequestService requestService;
+    private ResultService resultService;
+    private WikiWebService webService;
+    private WikiDataParserService articleParser;
+    private final String articleURL = "https://en.wikipedia.org/wiki/";
+    final int matcherGroupID = 2;
+    final String patternToGetAllArticlesTitles = "<a href=\"/wiki(/(.*?)\")";
 
-    private final DataParser articleParser;
-
-    public ArticleAnalyzerService() {
-        this.articleParser = new DataParser();
+    public ArticleAnalyzerService(RequestService requestService, ResultService resultService, WikiWebService webService, WikiDataParserService articleParser) {
+        this.requestService = requestService;
+        this.resultService = resultService;
+        this.webService = webService;
+        this.articleParser = articleParser;
     }
 
-    public void submitNewRequestForAnalysis(int id, String keyword) {
-        final String processStatus = "Processing";
-        final String done = "Completed";
-        final String failed = "Failed";
-        wikiRequestService.changeRequestStatus(id, processStatus);
+    public void submitNewRequest(int id, String keyword) {
+        requestService.updateRequestStatus(id, Status.Pending);
         WikipediaArticle article = webService.getWikiArticleContent(keyword);
 
         if (article != null){
-            analyze(article, id, keyword);
-            wikiRequestService.changeRequestStatus(id, done);
+            analyzeArticle(article, id, keyword);
+            requestService.updateRequestStatus(id, Status.Completed);
         } else {
-            wikiRequestService.changeRequestStatus(id, failed);
+            requestService.updateRequestStatus(id, Status.Failed);
         }
     }
 
-    private void analyze(WikipediaArticle article, int id, String keyword){
-        final int matcherGroupID = 2;
-        final String patternToGetAllArticlesTitles = "<a href=\"/wiki(/(.*?)\")";
-        final String articleURL = "https://en.wikipedia.org/wiki/";
-        List<String> parsedData = articleParser.parseData(article.getText().get("*"), patternToGetAllArticlesTitles, matcherGroupID);
+    private void analyzeArticle(WikipediaArticle article, int requestId, String keyword){
+        requestService.updateRequestStatus(requestId, Status.Processing);
+        Request currentRequest = requestService.getRequestById(requestId);
+        List<String> parsedData = articleParser.ParseData(article.getText().get("*"), patternToGetAllArticlesTitles, matcherGroupID);
+
         for (String articleName : parsedData) {
             threadPool.execute(() -> {
-                WikipediaArticle innerArticle = webService.getWikiArticleContent(articleName);
-                if (innerArticle != null) {
-                    List<String> linkList = articleParser.parseData(innerArticle.getText().get("*"), patternToGetAllArticlesTitles, matcherGroupID);
-                    for (String innerArticleLink : linkList) {
-                        if (innerArticleLink.equalsIgnoreCase(keyword)) {
-                            wikiArticleResultService.addResultsToDB(id, articleName, articleURL + articleName);
-                            break;
-                        }
-                    }
-                }
+                analyzeInnerArticle(currentRequest, keyword, articleName);
             });
+        }
+    }
+
+    private void analyzeInnerArticle(Request request, String keyword, String articleName){
+        WikipediaArticle innerArticle = webService.getWikiArticleContent(articleName);
+        if (innerArticle != null) {
+            List<String> linkList = articleParser.ParseData(innerArticle.getText().get("*"), patternToGetAllArticlesTitles, matcherGroupID);
+            for (String innerArticleLink : linkList) {
+                if (innerArticleLink.equalsIgnoreCase(keyword)) {
+                    try {
+                        Result result = resultService.addNewResult(request, articleName, articleURL + articleName);
+                        request.addResult(result);
+                    } catch (SQLException ex) {
+                        ex.getStackTrace();
+                    }
+                    break;
+                }
+            }
         }
     }
 }

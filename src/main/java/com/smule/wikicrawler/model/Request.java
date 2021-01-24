@@ -1,21 +1,33 @@
-package com.smule.wikicrawler.wiki;
+package com.smule.wikicrawler.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class WikiRequest {
+@Table(name = "Requests")
+public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
     private int id;
-    @Column(name = "KEYWORD")
-    private String keyword;
-    @Column(name = "STATUS")
-    private String status;
 
-    public WikiRequest() {
+    @Column(name = "Keyword", nullable = false)
+    private String keyword;
+
+    @Column(name = "Status", nullable = false)
+    private Status status;
+
+    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "request", fetch = FetchType.EAGER)
+    private final List<Result> results = new ArrayList<>();
+
+    public Request(){}
+
+    public Request(String keyword, Status status){
+        this.keyword = keyword;
+        this.status = status;
     }
 
-    @Column(name = "ID")
     public int getId() {
         return id;
     }
@@ -24,15 +36,20 @@ public class WikiRequest {
         return keyword;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
+    public void addResult(Result result){
+        results.add(result);
+        result.setRequest(this);
+    }
+
+    public List<Result> getResults() {
+        return results;
     }
 }

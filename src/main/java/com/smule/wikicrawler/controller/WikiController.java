@@ -1,9 +1,9 @@
 package com.smule.wikicrawler.controller;
 
-import com.smule.wikicrawler.dao.WikiArticleResultService;
-import com.smule.wikicrawler.dao.WikiRequestService;
+import com.smule.wikicrawler.dao.ResultService;
+import com.smule.wikicrawler.dao.RequestService;
 import com.smule.wikicrawler.service.ArticleAnalyzerService;
-import com.smule.wikicrawler.wiki.DataParser;
+import com.smule.wikicrawler.service.WikiDataParserService;
 import com.smule.wikicrawler.model.Result;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +21,18 @@ import java.util.List;
 
 @Controller
 public class WikiController {
-    private final DataParser dataParser;
+    private final WikiDataParserService wikiDataParserService;
     @Autowired
     private RestTemplate httpTemplate;
     @Autowired
-    private WikiRequestService wikiRequestService;
+    private RequestService requestService;
     @Autowired
-    private WikiArticleResultService wikiArticleResultService;
+    private ResultService resultService;
     @Autowired
     private ArticleAnalyzerService articleAnalyzerService;
 
     public WikiController() {
-        this.dataParser = new DataParser();
+        this.wikiDataParserService = new WikiDataParserService();
     }
 
     @GetMapping("/")
@@ -44,13 +44,13 @@ public class WikiController {
     public String startAnalysis(
             @RequestParam(name = "keyword") String keyword, Model model) throws SQLException {
         String escapedKeyword = StringEscapeUtils.escapeHtml4(keyword.replaceAll(" ", "_"));
-        int possibleId = wikiRequestService.getRequestIdByKeyword(escapedKeyword);
+        int possibleId = requestService.getRequestByKeyword(escapedKeyword);
         if (possibleId != 0) {
             return String.format("redirect:/view_all_results?reqID=%s&keyword=%s", possibleId, escapedKeyword.toLowerCase());
         }
-        int id = wikiRequestService.addNewRequestToDatabase(escapedKeyword);
+        int id = requestService.submitNewRequest(escapedKeyword);
         final String defaultStatus = "Pending";
-        new Thread(() -> articleAnalyzerService.submitNewRequestForAnalysis(id, escapedKeyword)
+        new Thread(() -> articleAnalyzerService.submitNewRequest(id, escapedKeyword)
         ).start();
 
         model.addAttribute("keyword", keyword);
@@ -73,13 +73,13 @@ public class WikiController {
         final int matcherGroupID = 1;
         final String completeRequestStatus = "Completed";
         final String failedRequestStatus = "Failed";
-        List<String> requestBody = dataParser.parseData(requestData, bodyParsingPattern, matcherGroupID);
+        List<String> requestBody = wikiDataParserService.ParseData(requestData, bodyParsingPattern, matcherGroupID);
         int reqID = Integer.parseInt(requestBody.get(0));
         String keyword = requestBody.get(1);
         keyword = StringEscapeUtils.escapeHtml4(keyword);
         String unescapedKeyword = keyword.replaceAll("_", " ");
 
-        String status = wikiRequestService.getRequestStatus(reqID);
+        String status = requestService.getRequestStatus(reqID);
 
         model.addAttribute("reqID", reqID);
         model.addAttribute("keyword", unescapedKeyword);
@@ -101,11 +101,11 @@ public class WikiController {
             @RequestParam(name = "keyword") String keyword,
             Model model) {
         final String completedStatus = "Completed";
-        List<Result> results = wikiArticleResultService.getRequestResults(Integer.parseInt(reqID));
+        List<Result> results = resultService.getRequestResults(Integer.parseInt(reqID));
         for (Result article : results){
-            String articleName = article.GetArticleName();
+            String articleName = article.getArticleName();
             articleName = StringEscapeUtils.unescapeHtml4(articleName.replaceAll("_", " "));
-            article.SetArticleName(articleName);
+            article.setArticleName(articleName);
         }
         model.addAttribute("reqID", reqID);
         model.addAttribute("status", completedStatus);

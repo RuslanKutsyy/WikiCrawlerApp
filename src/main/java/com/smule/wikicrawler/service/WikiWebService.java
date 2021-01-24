@@ -1,8 +1,7 @@
-package com.smule.wikicrawler.http;
+package com.smule.wikicrawler.service;
 
-import com.smule.wikicrawler.wiki.WikiResponseDto;
-import com.smule.wikicrawler.wiki.WikipediaArticle;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.smule.wikicrawler.dto.WikiResponseDto;
+import com.smule.wikicrawler.dto.WikipediaArticle;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -14,13 +13,15 @@ import java.net.URI;
 
 @Service
 public class WikiWebService {
-    @Autowired
-    RestTemplate webService;
+    private RestTemplate webService;
     private final String baseUrl = "https://en.wikipedia.org/w/api.php?";
+
+    public WikiWebService(RestTemplate restTemplate){
+        this.webService = restTemplate;
+    }
 
 
     public WikipediaArticle getWikiArticleContent(String title){
-        WikiResponseDto article = null;
         HttpHeaders headers = new HttpHeaders();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("action", "parse");

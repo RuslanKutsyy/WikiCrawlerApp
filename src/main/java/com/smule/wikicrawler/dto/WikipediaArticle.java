@@ -1,4 +1,4 @@
-package com.smule.wikicrawler.wiki;
+package com.smule.wikicrawler.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

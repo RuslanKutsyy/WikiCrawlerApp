@@ -1,45 +1,50 @@
-package com.smule.wikicrawler.wiki;
+package com.smule.wikicrawler.model;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "RequestResults")
-public class RequestResult {
+@Table(name = "Results")
+public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int requestID;
-    @OneToOne
-    private WikiRequest request;
-    @Column(name = "ARTICLE_NAME")
-    private String articleName;
-    @Column(name = "ARTICLE_LINK")
-    private String articleLink;
+    @Column(name = "ID", nullable = false)
+    private int id;
 
-    public RequestResult() {
+    @Column(name = "ArticleName")
+    private String articleName;
+
+    @Column(name = "ArticleURL")
+    private String articleUrl;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Request request;
+
+    public Result() {
     }
 
-    @JoinColumn(name = "ID")
-    public int getRequestID() {
-        return request.getId();
+    public Result(Request request, String articleName, String articleUrl) {
+        this.request = request;
+        this.articleName = articleName;
+        this.articleUrl = articleUrl;
+    }
+
+    public Request getRequest() {
+        return request;
     }
 
     public String getArticleName() {
         return articleName;
     }
 
-    public String getArticleLink() {
-        return articleLink;
-    }
-
-    public void setRequest(WikiRequest request) {
-        this.request = request;
+    public String getArticleUrl() {
+        return articleUrl;
     }
 
     public void setArticleName(String articleName) {
         this.articleName = articleName;
     }
 
-    public void setArticleLink(String backReferenceLink) {
-        this.articleLink = backReferenceLink;
+    public void setRequest(Request request) {
+        this.request = request;
     }
 }

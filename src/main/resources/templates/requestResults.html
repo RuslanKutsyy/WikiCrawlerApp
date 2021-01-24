@@ -64,7 +64,7 @@
                     <tr th:each="article : ${articlesList}">
                         <td th:text="${article.getArticleName()}">Article Title</td>
                         <td>
-                            <a th:href="${article.getArticleLink()}" th:target="_blank"><span th:text="${article.getArticleLink()}"></span></a>
+                            <a th:href="${article.getArticleUrl()}" th:target="_blank"><span th:text="${article.getArticleUrl()}"></span></a>
                         </td>
                     </tr>
                 </tbody>
