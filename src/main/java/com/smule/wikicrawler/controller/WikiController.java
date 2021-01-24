@@ -1,10 +1,10 @@
-package com.smule.wikicrawler.web;
+package com.smule.wikicrawler.controller;
 
-import com.smule.wikicrawler.database.WikiArticleResultService;
-import com.smule.wikicrawler.database.WikiRequestService;
-import com.smule.wikicrawler.wiki.ArticleAnalyzerService;
+import com.smule.wikicrawler.dao.WikiArticleResultService;
+import com.smule.wikicrawler.dao.WikiRequestService;
+import com.smule.wikicrawler.service.ArticleAnalyzerService;
 import com.smule.wikicrawler.wiki.DataParser;
-import com.smule.wikicrawler.wiki.RequestResult;
+import com.smule.wikicrawler.model.Result;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -101,11 +101,11 @@ public class WikiController {
             @RequestParam(name = "keyword") String keyword,
             Model model) {
         final String completedStatus = "Completed";
-        List<RequestResult> results = wikiArticleResultService.getRequestResults(Integer.parseInt(reqID));
-        for (RequestResult article : results){
-            String articleName = article.getArticleName();
+        List<Result> results = wikiArticleResultService.getRequestResults(Integer.parseInt(reqID));
+        for (Result article : results){
+            String articleName = article.GetArticleName();
             articleName = StringEscapeUtils.unescapeHtml4(articleName.replaceAll("_", " "));
-            article.setArticleName(articleName);
+            article.SetArticleName(articleName);
         }
         model.addAttribute("reqID", reqID);
         model.addAttribute("status", completedStatus);

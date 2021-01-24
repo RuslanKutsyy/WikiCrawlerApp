@@ -1,7 +1,7 @@
 package com.smule.wikicrawler.wiki;
 
-import com.smule.wikicrawler.database.WikiArticleResultService;
-import com.smule.wikicrawler.database.WikiRequestService;
+import com.smule.wikicrawler.dao.WikiArticleResultService;
+import com.smule.wikicrawler.dao.WikiRequestService;
 import com.smule.wikicrawler.http.WikiWebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
