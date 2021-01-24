@@ -1,5 +1,6 @@
 package com.smule.wikicrawler;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -24,5 +25,10 @@ public class WikiCrawlerApplication {
     public Executor getThreadPool(){
         Executor threadPool = Executors.newFixedThreadPool(20);
         return threadPool;
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 }
