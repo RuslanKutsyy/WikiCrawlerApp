@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="eng">
+<head>
+    <title>Wiki Crawler Tool by Ruslan Kutsyy</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .refreshBtnDiv {
+            padding-top: 20px ;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+
+</head>
+<body>
+<div id="responseData">
+    <div class="container border" style="margin-top: 10px">
+        <table class="table-bordered" style="margin-top: 10px">
+            <thead class="thead-dark col-md-10" style="background-color: #d9edf7">
+                <tr>
+                    <th>Request ID</th>
+                    <th>Request status</th>
+                </tr>
+            </thead>
+                <tbody>
+                    <td id="reqID" th:text="${reqID}"></td>
+                    <td id="reqStatus" th:text="${status}"></td>
+                </tbody>
+        </table>
+        <p><a href="/">Click here</a> to submit new request.</p>
+        <div id ="table">
+            <table>
+                <thead style="background-color: #d9edf7">
+                    <th>Article Title</th>
+                    <th>Article URL</th>
+                </thead>
+                <tbody>
+                    <tr th:each="article : ${articlesList}">
+                        <td th:text="${article.getArticleName()}">Article Title</td>
+                        <td>
+                            <a th:href="${article.getArticleLink()}" th:target="_blank"><span th:text="${article.getArticleLink()}"></span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function addListenerForRefresh() {
+        let btn = document.getElementById("refreshBtn");
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const reqID = document.getElementById("reqID").innerText;
+            const keyword = document.getElementById("keyword").innerText.replaceAll(' ', '_');
+            const url = `/view_all_results?reqID=` + reqID + '&keyword=' + keyword;
+            const httpRequest = new XMLHttpRequest();
+            httpRequest.addEventListener('readystatechange', function () {
+                if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                    let div = document.getElementById("responseData");
+                    div.innerHTML = httpRequest.responseText;
+                }
+            });
+            httpRequest.open("GET", url);
+            httpRequest.send();
+        });
+    });
+</script>
+</body>
+</html>

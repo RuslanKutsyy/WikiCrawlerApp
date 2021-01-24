@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="eng">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Wiki Crawler App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .inline_button {
+            padding: 10px 20px;
+            background-color: dodgerblue;
+            border: 1px solid #ddd;
+            color: white;
+            cursor: pointer;
+        }
+
+        .inline_button:hover {
+            background-color: royalblue;
+        }
+
+        .refreshBtnDiv {
+            padding-top: 20px;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+
+</head>
+<body>
+<div>
+    <div class="container border" style="margin-top: 10px">
+        <div id="responseData">
+            <table class="table-bordered" style="margin-top: 10px">
+                <thead class="thead-dark col-md-10" style="background-color: #d9edf7">
+                <tr>
+                    <th>Request ID</th>
+                    <th>Request status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <td id="reqID" th:text="${reqID}"></td>
+                <td id="reqStatus" th:text="${status}">Request status</td>
+                </tbody>
+            </table>
+            <p><span>Your request by keyword </span>
+                "<strong id="keyword" th:text="${keyword}"></strong>"<span> is being processed.</span>
+            </p>
+        </div>
+        <div class="form-group row" style="margin-top: 10px">
+            <div class="col-sm-10">
+                <button id="refreshBtn" type="submit" class="btn btn-primary">Refresh</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function addListenerForRefresh() {
+        let divToReplace = document.getElementById("responseData");
+        divToReplace.setAttribute("th:replace", "requestResultFragment :: status")
+        let btn = document.getElementById("refreshBtn");
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const reqID = document.getElementById("reqID").innerText;
+            let tempKeyword = document.getElementById("keyword").innerText;
+            const keyword = tempKeyword.replaceAll(" ", "_");
+            const url = `/get_search_status`;
+            const requestInfo = "reqID=" + reqID + "&keyword=" + keyword;
+            const httpRequest = new XMLHttpRequest();
+            httpRequest.addEventListener('readystatechange', function () {
+                if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                    let div = document.getElementById("responseData");
+                    div.innerHTML = httpRequest.responseText;
+                }
+            });
+            httpRequest.open("POST", url);
+            httpRequest.send(requestInfo);
+        });
+    });
+</script>
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+</body>
+</html>
