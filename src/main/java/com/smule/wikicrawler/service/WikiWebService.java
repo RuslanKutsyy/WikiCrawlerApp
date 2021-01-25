@@ -1,7 +1,7 @@
 package com.smule.wikicrawler.service;
 
 import com.smule.wikicrawler.dto.WikiResponseDto;
-import com.smule.wikicrawler.dto.WikipediaArticle;
+import com.smule.wikicrawler.dto.WikipediaArticleDto;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -21,7 +21,7 @@ public class WikiWebService {
     }
 
 
-    public WikipediaArticle getWikiArticleContent(String title){
+    public WikipediaArticleDto getWikiArticleContent(String title){
         HttpHeaders headers = new HttpHeaders();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("action", "parse");

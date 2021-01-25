@@ -16,20 +16,16 @@
             box-sizing: border-box;
         }
 
-        .inline_button {
-            padding: 10px 20px;
-            background-color: dodgerblue;
-            border: 1px solid #ddd;
+        #submitNewRequest {
+            color: #007bff;
+        }
+
+        a {
             color: white;
-            cursor: pointer;
         }
 
-        .inline_button:hover {
-            background-color: royalblue;
-        }
-
-        .refreshBtnDiv {
-            padding-top: 20px;
+        #refreshBtn {
+            color: white !important;
         }
 
         table {
@@ -62,49 +58,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                <td id="reqID" th:text="${reqID}"></td>
-                <td id="reqStatus" th:text="${status}">Request status</td>
+                <td id="reqID" th:text="${requestDto.getId()}"></td>
+                <td id="reqStatus" th:text="${requestDto.getStatus()}">Request status</td>
                 </tbody>
             </table>
             <p><span>Your request by keyword </span>
-                "<strong id="keyword" th:text="${keyword}"></strong>"<span> is being processed.</span>
+                "<strong id="keyword" th:text="${requestDto.getKeyword()}"></strong>"<span> is being processed.</span>
             </p>
+            <div style="display:block" id="complviewResultsDiv" th:style="${requestDto.getStatus() == 'Failed' ? 'display:block' : 'display:none'}">
+                <p><a th:href="@{'/submissions'}" id="submitNewRequest">Click here</a> to submit new request.</p>
+            </div>
         </div>
         <div class="form-group row" style="margin-top: 10px">
             <div class="col-sm-10">
-                <button id="refreshBtn" type="submit" class="btn btn-primary">Refresh</button>
+                <button id="refreshBtn" type="submit" class="btn btn-primary"><a th:href="'/submissions/' + ${requestDto.getId()}">Refresh</a></button>
             </div>
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function addListenerForRefresh() {
-        let divToReplace = document.getElementById("responseData");
-        divToReplace.setAttribute("th:replace", "requestResultFragment :: status")
-        let btn = document.getElementById("refreshBtn");
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const reqID = document.getElementById("reqID").innerText;
-            let tempKeyword = document.getElementById("keyword").innerText;
-            const keyword = tempKeyword.replaceAll(" ", "_");
-            const url = `/get_search_status`;
-            const requestInfo = "reqID=" + reqID + "&keyword=" + keyword;
-            const httpRequest = new XMLHttpRequest();
-            httpRequest.addEventListener('readystatechange', function () {
-                if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-                    let div = document.getElementById("responseData");
-                    div.innerHTML = httpRequest.responseText;
-                }
-            });
-            httpRequest.open("POST", url);
-            httpRequest.send(requestInfo);
-        });
-    });
-</script>
-<script>
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
-    }
-</script>
 </body>
 </html>

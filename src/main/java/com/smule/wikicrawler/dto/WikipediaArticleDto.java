@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WikipediaArticle {
+public class WikipediaArticleDto {
     @JsonProperty("title")
     private String title;
     @JsonProperty("pageid")
@@ -13,7 +13,7 @@ public class WikipediaArticle {
     @JsonProperty("text")
     private Map<String, String> text;
 
-    public WikipediaArticle() {
+    public WikipediaArticleDto() {
         this.text = new HashMap<>();
     }
 

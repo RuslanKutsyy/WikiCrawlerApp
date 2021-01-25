@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringBootApplication
@@ -22,9 +23,8 @@ public class WikiCrawlerApplication {
     }
 
     @Bean
-    public Executor getThreadPool(){
-        Executor threadPool = Executors.newFixedThreadPool(20);
-        return threadPool;
+    public ExecutorService getThreadPool(){
+        return Executors.newFixedThreadPool(50);
     }
 
     @Bean

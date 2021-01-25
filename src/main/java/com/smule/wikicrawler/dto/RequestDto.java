@@ -3,19 +3,14 @@ package com.smule.wikicrawler.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.smule.wikicrawler.model.Request;
 
+import java.util.List;
+
 public class RequestDto {
     @JsonProperty("id")
-    private Integer id;
+    private int id;
     private String keyword;
     private String status;
-
-    public RequestDto(){}
-
-    public RequestDto(Integer id, String keyword, String status){
-        this.id = id;
-        this.keyword = keyword;
-        this.status = status;
-    }
+    private List<ResultDto> results;
 
     public int getId() {
         return id;
@@ -39,5 +34,13 @@ public class RequestDto {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<ResultDto> getResults() {
+        return results;
+    }
+
+    public void setResults(List<ResultDto> results) {
+        this.results = results;
     }
 }

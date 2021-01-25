@@ -16,8 +16,8 @@
             box-sizing: border-box;
         }
 
-        .refreshBtnDiv {
-            padding-top: 20px ;
+        p {
+            margin-top: 1rem;
         }
 
         table {
@@ -49,11 +49,11 @@
                 </tr>
             </thead>
                 <tbody>
-                    <td id="reqID" th:text="${reqID}"></td>
-                    <td id="reqStatus" th:text="${status}"></td>
+                    <td id="reqID" th:text="${requestDto.getId()}"></td>
+                    <td id="reqStatus" th:text="${requestDto.getStatus()}"></td>
                 </tbody>
         </table>
-        <p><a href="/">Click here</a> to submit new request.</p>
+        <p><a href="/submissions">Click here</a> to submit new request.</p>
         <div id ="table">
             <table>
                 <thead style="background-color: #d9edf7">
@@ -61,7 +61,7 @@
                     <th>Article URL</th>
                 </thead>
                 <tbody>
-                    <tr th:each="article : ${articlesList}">
+                    <tr th:each="article : ${requestDto.getResults()}">
                         <td th:text="${article.getArticleName()}">Article Title</td>
                         <td>
                             <a th:href="${article.getArticleUrl()}" th:target="_blank"><span th:text="${article.getArticleUrl()}"></span></a>
@@ -80,7 +80,7 @@
             e.preventDefault();
             const reqID = document.getElementById("reqID").innerText;
             const keyword = document.getElementById("keyword").innerText.replaceAll(' ', '_');
-            const url = `/view_all_results?reqID=` + reqID + '&keyword=' + keyword;
+            const url = `/submissions/` + reqID;
             const httpRequest = new XMLHttpRequest();
             httpRequest.addEventListener('readystatechange', function () {
                 if (httpRequest.readyState == 4 && httpRequest.status == 200) {
