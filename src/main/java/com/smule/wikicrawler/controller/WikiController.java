@@ -59,8 +59,8 @@ public class WikiController {
         if (possibleId != 0) {
             getSubmissionsById(possibleId, new ModelAndView());
         }
-        var requestId = requestService.submitNewRequest(escapedKeyword);
-        var request = requestService.getRequestById(requestId);
+        int requestId = requestService.submitNewRequest(escapedKeyword);
+        Request request = requestService.getRequestById(requestId);
 
         RequestDto requestDto = mapper.map(request, RequestDto.class);
 
