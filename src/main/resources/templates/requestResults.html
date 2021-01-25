@@ -54,7 +54,10 @@
                 </tbody>
         </table>
         <p><a href="/submissions">Click here</a> to submit new request.</p>
-        <div id ="table">
+        <p th:style="${requestDto.getResults().isEmpty() ? 'display:block' : 'display:none'}"><span>No results found by keyword </span>
+            "<strong id="keyword" th:text="${requestDto.getKeyword()}"></strong>"<span>.</span>
+        </p>
+        <div id ="table" th:style="${requestDto.getResults().isEmpty() ? 'display: none' : 'display:block'}">
             <table>
                 <thead style="background-color: #d9edf7">
                     <th>Article Title</th>

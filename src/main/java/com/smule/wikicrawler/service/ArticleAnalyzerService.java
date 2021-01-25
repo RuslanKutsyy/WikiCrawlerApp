@@ -87,7 +87,7 @@ public class ArticleAnalyzerService {
             }));
         }
 
-        for (var task : tasks){
+        for (Future task : tasks){
             task.get();
         }
 
