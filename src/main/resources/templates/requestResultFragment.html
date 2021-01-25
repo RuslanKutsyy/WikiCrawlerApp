@@ -1,70 +1,70 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="eng">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
-    <div th:fragment="statusProcessing">
-        <div class="container border" style="margin-top: 10px">
-            <table class="table-bordered" style="margin-top: 10px">
-                <thead class="thead-dark col-md-10" style="background-color: #d9edf7">
-                    <tr>
-                        <th>Request ID</th>
-                        <th>Request status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <td id="reqID" th:text="${reqID}"></td>
-                    <td id="reqStatus" th:text="${status}">Request status</td>
-                </tbody>
-            </table>
-            <p><span>Your request by keyword </span>
-                "<strong id="keyword" th:text="${keyword}"></strong>"<span> is being processed.</span>
-            </p>
-        </div>
-    </div>
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" lang="eng">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div th:fragment="statusProcessing">-->
+<!--        <div class="container border" style="margin-top: 10px">-->
+<!--            <table class="table-bordered" style="margin-top: 10px">-->
+<!--                <thead class="thead-dark col-md-10" style="background-color: #d9edf7">-->
+<!--                    <tr>-->
+<!--                        <th>Request ID</th>-->
+<!--                        <th>Request status</th>-->
+<!--                    </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                    <td id="reqID" th:text="${reqID}"></td>-->
+<!--                    <td id="reqStatus" th:text="${status}">Request status</td>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--            <p><span>Your request by keyword </span>-->
+<!--                "<strong id="keyword" th:text="${keyword}"></strong>"<span> is being processed.</span>-->
+<!--            </p>-->
+<!--        </div>-->
+<!--    </div>-->
 
-    <div th:fragment="statusCompleted">
-        <div class="container border" style="margin-top: 10px">
-            <table class="table-bordered" style="margin-top: 10px">
-                <thead class="thead-dark col-md-10" style="background-color: #d9edf7">
-                    <tr>
-                        <th>Request ID</th>
-                        <th>Request status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <td id="reqID" th:text="${reqID}"></td>
-                    <td id="reqStatus" th:text="${status}">Request status</td>
-                </tbody>
-            </table>
-            <p>Your request by keyword "<strong id="keyword" th:text="${keyword}"></strong>" is <span th:text="${status.toLowerCase()} + '.'"></span></p>
-            <div style="display:block" id="complviewResultsDiv">
-                <a th:href="@{'/view_all_results' + '?' + 'reqID=' + ${reqID} + '&keyword=' + ${keyword}}" id="complviewResultsLink">View Results</a>
-            </div>
-        </div>
-    </div>
-    <div th:fragment="statusFailed">
-        <div class="container border" style="margin-top: 10px">
-            <table class="table-bordered" style="margin-top: 10px">
-                <thead class="thead-dark col-md-10" style="background-color: #d9edf7">
-                <tr>
-                    <th>Request ID</th>
-                    <th>Request status</th>
-                </tr>
-                </thead>
-                <tbody>
-                <td id="reqID" th:text="${reqID}"></td>
-                <td id="reqStatus" th:text="${status}">Request status</td>
-                </tbody>
-            </table>
-            <p>Your request by keyword "<strong id="keyword" th:text="${keyword}"></strong>" has <span th:text="${status.toLowerCase()} + '.'"></span></p>
-            <p>No articles found by keyword "<strong th:text="${keyword}"></strong>". Please check the keyword and try again.</p>
-            <div style="display:block" id="complviewResultsDiv">
-                <a th:href="@{'/'}" id="complviewResultsLink">Submit new Request</a>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+<!--    <div th:fragment="statusCompleted">-->
+<!--        <div class="container border" style="margin-top: 10px">-->
+<!--            <table class="table-bordered" style="margin-top: 10px">-->
+<!--                <thead class="thead-dark col-md-10" style="background-color: #d9edf7">-->
+<!--                    <tr>-->
+<!--                        <th>Request ID</th>-->
+<!--                        <th>Request status</th>-->
+<!--                    </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                    <td id="reqID" th:text="${reqID}"></td>-->
+<!--                    <td id="reqStatus" th:text="${status}">Request status</td>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--            <p>Your request by keyword "<strong id="keyword" th:text="${keyword}"></strong>" is <span th:text="${status.toLowerCase()} + '.'"></span></p>-->
+<!--            <div style="display:block" id="complviewResultsDiv">-->
+<!--                <a th:href="@{'/submissions/' + ${reqID}}" id="complviewResultsLink">View Results</a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div th:fragment="statusFailed">-->
+<!--        <div class="container border" style="margin-top: 10px">-->
+<!--            <table class="table-bordered" style="margin-top: 10px">-->
+<!--                <thead class="thead-dark col-md-10" style="background-color: #d9edf7">-->
+<!--                <tr>-->
+<!--                    <th>Request ID</th>-->
+<!--                    <th>Request status</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <td id="reqID" th:text="${reqID}"></td>-->
+<!--                <td id="reqStatus" th:text="${status}">Request status</td>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--            <p>Your request by keyword "<strong id="keyword" th:text="${keyword}"></strong>" has <span th:text="${status.toLowerCase()} + '.'"></span></p>-->
+<!--            <p>No articles found by keyword "<strong th:text="${keyword}"></strong>". Please check the keyword and try again.</p>-->
+<!--            <div style="display:block" id="complviewResultsDiv">-->
+<!--                <a th:href="@{'/'}" id="complviewResultsLink">Submit new Request</a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</body>-->
+<!--</html>-->

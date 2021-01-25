@@ -1,17 +1,16 @@
 package com.smule.wikicrawler.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.smule.wikicrawler.dto.WikipediaArticle;
 
 public class WikiResponseDto {
     @JsonProperty("parse")
-    private final WikipediaArticle parse;
+    private final WikipediaArticleDto parse;
 
     public WikiResponseDto() {
-        this.parse = new WikipediaArticle();
+        this.parse = new WikipediaArticleDto();
     }
 
-    public WikipediaArticle getParse() {
+    public WikipediaArticleDto getParse() {
         return parse;
     }
 }

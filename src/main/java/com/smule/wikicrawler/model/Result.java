@@ -22,8 +22,8 @@ public class Result {
     public Result() {
     }
 
-    public Result(Request request, String articleName, String articleUrl) {
-        this.request = request;
+    public Result(String articleName, String articleUrl) {
+//        this.request = request;
         this.articleName = articleName;
         this.articleUrl = articleUrl;
     }

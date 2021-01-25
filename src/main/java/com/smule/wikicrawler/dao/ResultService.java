@@ -26,10 +26,13 @@ public class ResultService {
         return results;
     }
 
-    public Result addNewResult(Request request, String articleName, String articleUrl) throws SQLException {
-        Result result = new Result(request, articleName, articleUrl);
+    public Result addNewResult(Result result) throws SQLException {
         wikiArticleRepository.save(result);
 
         return result;
+    }
+
+    public synchronized void addResults(List<Result> results) throws SQLException {
+        wikiArticleRepository.saveAll(results);
     }
 }
