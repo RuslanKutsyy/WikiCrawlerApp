@@ -69,11 +69,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.11</version>
         </dependency>
-		<dependency>
-			<groupId>com.smule</groupId>
-			<artifactId>wiki-crawler</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 
 	<build>
